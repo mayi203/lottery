@@ -4,7 +4,7 @@ export default function Ball({ num, type, selected = true, onClick }: BallProps)
         type === 'red' ? 'bg-red-800' : 'bg-blue-800' :
         type === 'red' ? 'bg-red-500' : 'bg-blue-500';
     return (
-        <button className={`flex h-12 w-12 m-2 
+        <button className={`flex h-12 w-12 m-2
             justify-center items-center rounded-full 
             backdrop-blur-lg shadow-lg
             border border-white/20 

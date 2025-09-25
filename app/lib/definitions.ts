@@ -5,6 +5,12 @@ export interface BallProps {
     onClick?: () => void;
 }
 
+export type PrizeGrade = {
+    type: number;
+    typenum: number;
+    typemoney: number;
+}
+
 export type Draw = {
     code: string;
     date: Date;

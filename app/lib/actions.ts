@@ -6,7 +6,7 @@ import { Draw } from '@/app/lib/definitions';
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 export async function lotteryDraw(reds: number[]) {
-    const redsStr = reds.map(n => n.toString().padStart(2, '0')).join(',');
+    const redsStr = reds.sort((a, b) => a - b).map(n => n.toString().padStart(2, '0')).join(',');
     try {
         const data = await sql<Draw[]>`
             SELECT *
