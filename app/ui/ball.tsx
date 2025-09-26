@@ -16,7 +16,6 @@ export default function Ball({ num, type, selected = true, onClick }: BallProps)
         <button className={`flex h-10 w-10 sm:h-12 sm:w-12 m-1 sm:m-2
             justify-center items-center rounded-full 
             backdrop-blur-lg shadow-lg
-            border border-white/20 
             ${bgColor} bg-opacity-90
             text-white/90 text-sm sm:text-base
             hover:scale-105 hover:shadow-2xl transition-all duration-300`}

@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   description: "查询你的双色球号码，在历史上有没有中过奖",
   icons: {
     icon: '/double-color.png'
+  },
+  openGraph: {
+    title: "双色球号码查询",
+    description: "查询你的双色球号码，在历史上有没有中过奖",
   }
 };
 

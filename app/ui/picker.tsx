@@ -13,8 +13,6 @@ export default function Picker() {
     const redNums = Array.from({ length: 33 }, (_, i) => i + 1);
     const blueNums = Array.from({ length: 16 }, (_, i) => i + 1);
 
-    console.log(`red slots:${redSlots}`)
-
     function sortBall(a: number, b: number) {
         if (a === 0) return 1;   // a 是 0，放后
         if (b === 0) return -1;  // b 是 0，a 放前
@@ -55,7 +53,7 @@ export default function Picker() {
     }
 
     return (
-        <div className="flex flex-col w-full max-w-2xl bg-white/10 backdrop-blur-lg p-3 sm:p-4 rounded-lg shadow-lg">
+        <div className="flex flex-col w-full max-w-2xl bg-white/90 backdrop-blur-lg p-3 sm:p-4 rounded-lg shadow-lg">
             <h2>选择一组号码查询</h2>
             <div className="flex flex-wrap justify-start">
                 {redNums.map((num) => (<Ball key={num} num={num} type="red" selected={redSlots.includes(num)} onClick={() => { handleBallClick(num, 'red') }} />))}
