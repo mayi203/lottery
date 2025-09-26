@@ -6,42 +6,75 @@ export default function LotteryDraw({ draw }: { draw: Draw }) {
     const [showDetail, setShowDetail] = useState(false);
     const prizegrades: PrizeGrade[] = draw.prizegrades as unknown as PrizeGrade[];
     return (
-        <div className="flex flex-col bg-white/90 backdrop-blur-lg p-3 sm:p-4 rounded-lg shadow-lg m-2 w-full max-w-2xl">
-            <h3> {draw.date.toISOString().slice(0, 10)} | {draw.code}期</h3>
-            <div className="flex flex-row flex-wrap justify-start">
-                {draw.red.split(',').map(item => <Ball key={Number(item)} num={Number(item)} type="red" />)}
-                {<Ball num={Number(draw.blue)} type="blue" />}
-            </div>
-            <span className="text-blue-500 ml-auto text-sm sm:text-base cursor-pointer" onClick={() => setShowDetail(!showDetail)}>{showDetail ? '收起' : '详情'}</span>
-            {
-                showDetail &&
-                <div className="flex flex-col bg-gray-200/50 backdrop-blur-lg p-3 sm:p-4 m-2 mt-4 w-full">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm sm:text-base">
-                            <thead>
-                                <tr>
-                                    <th className="text-left p-2">奖项</th>
-                                    <th className="text-left p-2">中奖注数</th>
-                                    <th className="text-left p-2">单注奖金</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {prizegrades.slice(0, 3).map((prize) => {
-                                    return (
-                                        <tr key={prize.type}>
-                                            <td className="p-2">{prize.type}等奖</td>
-                                            <td className="p-2">{Number(prize.typenum).toLocaleString()}</td>
-                                            <td className="p-2">{Number(prize.typemoney).toLocaleString()}</td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
+        <article className="group relative m-2 w-full max-w-3xl overflow-hidden rounded-3xl border border-white/15 bg-slate-900/75 p-5 shadow-[0_30px_90px_-45px_rgba(59,130,246,0.55)] backdrop-blur-2xl transition-transform duration-500 hover:-translate-y-1">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(244,63,94,0.22),transparent_55%)]" aria-hidden />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(14,165,233,0.18),transparent_60%)] opacity-90" aria-hidden />
+
+            <div className="relative z-10 flex flex-col gap-4">
+                <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h3 className="text-lg font-semibold tracking-wide text-white/95 sm:text-xl">
+                            {draw.code} 期 · {draw.date.toISOString().slice(0, 10)}
+                        </h3>
+                        <p className="text-xs uppercase tracking-[0.35em] text-slate-300/70">
+                            Latest draw overview
+                        </p>
                     </div>
-                    <p className="text-xs sm:text-sm mt-2">{`销售额: ${Number(draw.sales).toLocaleString()}`}</p>
-                    <p className="text-xs sm:text-sm mt-2">{`奖池: ${Number(draw.poolmoney).toLocaleString()}`}</p>
+                    <button
+                        type="button"
+                        onClick={() => setShowDetail((prev) => !prev)}
+                        className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-medium text-slate-100 transition-all duration-300 hover:border-cyan-300/60 hover:bg-cyan-400/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                    >
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.8)]" aria-hidden />
+                        {showDetail ? '收起详情' : '展开详情'}
+                    </button>
+                </header>
+
+                <div className="flex flex-wrap items-center gap-2">
+                    {draw.red.split(',').map((item) => (
+                        <Ball key={Number(item)} num={Number(item)} type="red" />
+                    ))}
+                    <Ball num={Number(draw.blue)} type="blue" />
                 </div>
-            }
-        </div>
+
+                <div className="flex flex-wrap gap-4 text-sm text-slate-200/80">
+                    <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5">
+                        <span className="h-2 w-2 rounded-full bg-emerald-400/80" aria-hidden />
+                        销售额 {Number(draw.sales).toLocaleString()}
+                    </span>
+                    <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5">
+                        <span className="h-2 w-2 rounded-full bg-sky-400/80" aria-hidden />
+                        奖池 {Number(draw.poolmoney).toLocaleString()}
+                    </span>
+                </div>
+
+                <div
+                    className={`grid overflow-hidden transition-all duration-500 ease-out ${showDetail ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+                >
+                    <div className="mt-2 overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-xs text-slate-200/90 sm:text-sm">
+                                <thead className="text-slate-300/70">
+                                    <tr>
+                                        <th className="px-3 py-2 text-left font-medium">奖项</th>
+                                        <th className="px-3 py-2 text-left font-medium">中奖注数</th>
+                                        <th className="px-3 py-2 text-left font-medium">单注奖金</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-white/5">
+                                    {prizegrades.slice(0, 3).map((prize) => (
+                                        <tr key={prize.type}>
+                                            <td className="px-3 py-2 text-slate-100/90">{prize.type} 等奖</td>
+                                            <td className="px-3 py-2 text-slate-100/80">{Number(prize.typenum).toLocaleString()}</td>
+                                            <td className="px-3 py-2 text-emerald-200/90">¥ {Number(prize.typemoney).toLocaleString()}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
     );
 }
