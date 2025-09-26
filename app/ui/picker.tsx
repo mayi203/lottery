@@ -9,6 +9,7 @@ export default function Picker() {
     const [redSlots, setRedSlots] = useState<(number)[]>(Array(6).fill(0));
     const [blueSlot, setBlueSlot] = useState<number>(0);
     const [queryResult, setQueryResult] = useState<Draw[] | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const redNums = Array.from({ length: 33 }, (_, i) => i + 1);
     const blueNums = Array.from({ length: 16 }, (_, i) => i + 1);
 
@@ -20,7 +21,13 @@ export default function Picker() {
         return a - b;
     }
 
-    async function handleBallClick(num: number, type: 'red' | 'blue') {
+    function handleBallClick(num: number, type: 'red' | 'blue') {
+        if (isLoading) {
+            return
+        }
+        if (queryResult) {
+            setQueryResult(null)
+        }
         if (type === 'blue') {
             setBlueSlot(num);
         } else {
@@ -39,32 +46,43 @@ export default function Picker() {
         }
     }
 
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        setIsLoading(true);
+        const result = await lotteryDraw(redSlots);
+        setQueryResult(result ?? null);
+        setIsLoading(false);
+    }
+
     return (
-        <div className="flex flex-col w-200 bg-white/10 backdrop-blur-lg p-4 rounded-lg shadow-lg">
-            <div className="flex flex-wrap">
-                {redNums.map((num) => (<Ball num={num} type="red" selected={redSlots.includes(num)} onClick={() => { handleBallClick(num, 'red') }} />))}
+        <div className="flex flex-col w-full max-w-2xl bg-white/10 backdrop-blur-lg p-3 sm:p-4 rounded-lg shadow-lg">
+            <h2>选择一组号码查询</h2>
+            <div className="flex flex-wrap justify-start">
+                {redNums.map((num) => (<Ball key={num} num={num} type="red" selected={redSlots.includes(num)} onClick={() => { handleBallClick(num, 'red') }} />))}
             </div>
-            <div className="flex flex-wrap">
-                {blueNums.map((num) => (<Ball num={num} type="blue" selected={blueSlot === num} onClick={() => { handleBallClick(num, 'blue') }} />))}
+            <div className="flex flex-wrap justify-start mt-2">
+                {blueNums.map((num) => (<Ball key={num} num={num} type="blue" selected={blueSlot === num} onClick={() => { handleBallClick(num, 'blue') }} />))}
             </div>
-            <form className="flex flex-row border-t border-gray-300" action={async () => {
-                const result = await lotteryDraw(redSlots)
-                setQueryResult(result ?? null)
-            }}>
-                {redSlots.map((num, index) => (<Ball key={index} num={num} type="red" />))}
-                <Ball num={blueSlot} type="blue" />
-                {(redSlots.every(n => n > 0) && blueSlot > 0) &&
-                    <button className="bg-green-600 rounded-sm text-white w-16 m-2" type='submit'>查询</button>}
+            <form className="flex flex-col sm:flex-row items-center justify-center border-t border-gray-300 pt-4 mt-4" onSubmit={handleSubmit}>
+                <div className="flex flex-wrap justify-start mb-3 sm:mb-0">
+                    {redSlots.map((num, index) => (<Ball key={index} num={num} type="red" />))}
+                    <Ball num={blueSlot} type="blue" />
+                </div>
+                <button className="bg-green-600 rounded-sm text-white px-4 py-2 m-2 text-sm sm:text-base disabled:bg-gray-400" type='submit' disabled={isLoading || !redSlots.every(n => n > 0) || blueSlot === 0}>
+                    {isLoading ? '查询中...' : '查询'}
+                </button>
             </form>
             {queryResult &&
-                <div className="mt-4">
-                    <h3 className="text-lg font-bold mb-2">查询结果:</h3>
+                <div className="mt-4 w-full">
+                    <h3 className="text-lg font-bold mb-2 text-center sm:text-left">查询结果:</h3>
                     {queryResult.length > 0 ? (
-                        queryResult.map((draw) => (
-                            <LotteryDraw key={draw.code} draw={draw} />
-                        ))
+                        <div className="flex flex-col items-center sm:items-start">
+                            {queryResult.map((draw) => (
+                                <LotteryDraw key={draw.code} draw={draw} />
+                            ))}
+                        </div>
                     ) : (
-                        <p>未找到匹配的开奖数据。</p>
+                        <p className="text-center">该组号码没有中过一等奖或二等奖。</p>
                     )}
                 </div>
             }
