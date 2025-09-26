@@ -11,10 +11,10 @@ export default function LotteryDraw({ draw }: { draw: Draw }) {
         <div className="flex flex-col bg-white/10 backdrop-blur-lg p-4 rounded-lg shadow-lg m-2">
             <p> {draw.date.toISOString().slice(0, 10)} | 第{draw.code}期</p>
             <div className="flex flex-row">
-                {draw.red.split(',').map(item => <Ball num={Number(item)} type="red" />)}
+                {draw.red.split(',').map(item => <Ball key={Number(item)} num={Number(item)} type="red" />)}
                 {<Ball num={Number(draw.blue)} type="blue" />}
             </div>
-            <span onClick={() => setShowDetail(!showDetail)}>{showDetail ? '收起' : '展开'}</span>
+            <span className="text-blue-500 ml-auto" onClick={() => setShowDetail(!showDetail)}>{showDetail ? '收起' : '展开'}</span>
             {
                 showDetail &&
                 <div className="flex flex-col bg-white/10 backdrop-blur-lg p-4 rounded-lg shadow-lg m-2">

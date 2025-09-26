@@ -6,20 +6,35 @@ import { useState } from "react";
 import { lotteryDraw } from "@/app/lib/actions";
 
 export default function Picker() {
-    const [selectedReds, setSelectedReds] = useState<number[]>([]);
-    const [selectedBlue, setSelectedBlue] = useState<number | null>(null);
+    const [redSlots, setRedSlots] = useState<(number)[]>(Array(6).fill(0));
+    const [blueSlot, setBlueSlot] = useState<number>(0);
     const [queryResult, setQueryResult] = useState<Draw[] | null>(null);
     const redNums = Array.from({ length: 33 }, (_, i) => i + 1);
     const blueNums = Array.from({ length: 16 }, (_, i) => i + 1);
 
+    console.log(`red slots:${redSlots}`)
+
+    function sortBall(a: number, b: number) {
+        if (a === 0) return 1;   // a 是 0，放后
+        if (b === 0) return -1;  // b 是 0，a 放前
+        return a - b;
+    }
+
     async function handleBallClick(num: number, type: 'red' | 'blue') {
         if (type === 'blue') {
-            setSelectedBlue(num);
+            setBlueSlot(num);
         } else {
-            if (selectedReds.includes(num)) {
-                setSelectedReds(selectedReds.filter(n => n !== num))
-            } else if (selectedReds.length < 6) {
-                setSelectedReds([...selectedReds, num])
+            if (redSlots.includes(num)) {
+                const newSlots = redSlots.filter(n => n !== num);
+                while (newSlots.length < 6) newSlots.push(0);
+                setRedSlots(newSlots.sort(sortBall));
+            } else {
+                const index = redSlots.findIndex(slot => slot === 0);
+                if (index !== -1) {
+                    const newSlots = [...redSlots];
+                    newSlots[index] = num;
+                    setRedSlots(newSlots.sort(sortBall));
+                }
             }
         }
     }
@@ -27,19 +42,19 @@ export default function Picker() {
     return (
         <div className="flex flex-col w-200 bg-white/10 backdrop-blur-lg p-4 rounded-lg shadow-lg">
             <div className="flex flex-wrap">
-                {redNums.map((num) => (<Ball num={num} type="red" selected={selectedReds.includes(num)} onClick={() => { handleBallClick(num, 'red') }} />))}
+                {redNums.map((num) => (<Ball num={num} type="red" selected={redSlots.includes(num)} onClick={() => { handleBallClick(num, 'red') }} />))}
             </div>
             <div className="flex flex-wrap">
-                {blueNums.map((num) => (<Ball num={num} type="blue" selected={selectedBlue === num} onClick={() => { handleBallClick(num, 'blue') }} />))}
+                {blueNums.map((num) => (<Ball num={num} type="blue" selected={blueSlot === num} onClick={() => { handleBallClick(num, 'blue') }} />))}
             </div>
-            <form action={async () => {
-                const result = await lotteryDraw(selectedReds)
+            <form className="flex flex-row border-t border-gray-300" action={async () => {
+                const result = await lotteryDraw(redSlots)
                 setQueryResult(result ?? null)
             }}>
-                <p>红球: {selectedReds.sort((a, b) => a - b).join(',')}</p>
-                <p>蓝球: {selectedBlue}</p>
-                {(selectedReds.length == 6 && selectedBlue) &&
-                    <button className="bg-blue-400 rounded-sm p-1" type='submit'>查询</button>}
+                {redSlots.map((num, index) => (<Ball key={index} num={num} type="red" />))}
+                <Ball num={blueSlot} type="blue" />
+                {(redSlots.every(n => n > 0) && blueSlot > 0) &&
+                    <button className="bg-green-600 rounded-sm text-white w-16 m-2" type='submit'>查询</button>}
             </form>
             {queryResult &&
                 <div className="mt-4">
