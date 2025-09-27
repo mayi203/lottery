@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Picker from "@/app/ui/picker";
 import LotteryDraw from "@/app/ui/lottery-draw";
 import { fetchLatestDraw } from "@/app/lib/data";
@@ -5,10 +6,54 @@ import { LotteryDrawSkeleton } from "@/app/ui/skeletons";
 import { Suspense } from "react";
 import Link from "next/link";
 
+const envSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+const siteUrl = envSiteUrl && envSiteUrl.length > 0 ? envSiteUrl : "https://lottery.example.com";
+
+export const metadata: Metadata = {
+  title: "双色球历史开奖数据查询",
+  description: "输入 6 个红球与 1 个蓝球，快速检索历年的双色球大奖记录，并获取当期最新开奖情况。",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "双色球历史开奖数据查询",
+    description: "一站式双色球号码查询工具，涵盖历史开奖数据与最新一期中奖号码。",
+    url: siteUrl,
+  },
+  twitter: {
+    title: "双色球历史开奖数据查询",
+    description: "一站式双色球号码查询工具，涵盖历史开奖数据与最新一期中奖号码。",
+  },
+};
+
 export default async function Home() {
   const latest = await fetchLatestDraw()
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "双色球号码查询",
+    url: siteUrl,
+    applicationCategory: "LifestyleApplication",
+    operatingSystem: "Web",
+    inLanguage: "zh-CN",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "CNY",
+    },
+    description: "基于历史开奖数据的双色球号码在线查询工具，支持号码智能校验与最新开奖展示。",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteUrl}/?reds={reds}`,
+      "query-input": "required name=reds",
+    },
+  };
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-slate-950 text-slate-100">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-44 left-1/2 h-96 w-[32rem] -translate-x-1/2 rounded-full bg-emerald-500/20 blur-3xl" aria-hidden />
         <div className="absolute bottom-0 right-[-8rem] h-[28rem] w-[28rem] rounded-full bg-sky-500/25 blur-3xl" aria-hidden />
