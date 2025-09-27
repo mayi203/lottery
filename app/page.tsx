@@ -26,8 +26,21 @@ export const metadata: Metadata = {
   },
 };
 
+async function LatestDrawSection() {
+  const latest = await fetchLatestDraw();
+
+  if (!latest) {
+    return (
+      <div className="flex h-48 w-full max-w-3xl items-center justify-center rounded-3xl border border-white/10 bg-white/5 text-sm text-slate-200/80">
+        暂无法获取最新开奖数据，请稍后重试。
+      </div>
+    );
+  }
+
+  return <LotteryDraw draw={latest} />;
+}
+
 export default async function Home() {
-  const latest = await fetchLatestDraw()
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -75,7 +88,7 @@ export default async function Home() {
 
         <main className="flex flex-1 flex-col items-center gap-8 sm:gap-10">
           <Suspense fallback={<LotteryDrawSkeleton />}>
-            <LotteryDraw draw={latest} />
+            <LatestDrawSection />
           </Suspense>
           <Picker />
         </main>
