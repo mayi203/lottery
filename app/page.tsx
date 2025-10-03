@@ -6,6 +6,8 @@ import { LotteryDrawSkeleton } from "@/app/ui/skeletons";
 import { Suspense } from "react";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 const envSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
 const siteUrl = envSiteUrl && envSiteUrl.length > 0 ? envSiteUrl : "https://lottery.example.com";
 
