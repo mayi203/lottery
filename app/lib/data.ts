@@ -1,8 +1,10 @@
 import postgres from 'postgres';
+import { unstable_noStore as noStore } from 'next/cache';
 import { Draw } from '@/app/lib/definitions'
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 export async function fetchLatestDraw() {
     try {
+        noStore();
         const data = await sql<Draw[]>`
       SELECT *
       FROM double_color_ball
