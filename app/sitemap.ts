@@ -13,6 +13,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: `${siteUrl}/super-lotto`,
+      lastModified,
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+    {
       url: `${siteUrl}/sitemap.xml`,
       lastModified,
       changeFrequency: "daily",

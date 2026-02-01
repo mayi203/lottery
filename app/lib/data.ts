@@ -1,13 +1,15 @@
 import postgres from 'postgres';
 import { unstable_noStore as noStore } from 'next/cache';
-import { Draw } from '@/app/lib/definitions'
+import { Draw, LotteryType, lotteryConfigs } from '@/app/lib/definitions'
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
-export async function fetchLatestDraw() {
+
+export async function fetchLatestDraw(lotteryType: LotteryType = 'double-color') {
+    const config = lotteryConfigs[lotteryType];
     try {
         noStore();
         const data = await sql<Draw[]>`
       SELECT *
-      FROM double_color_ball
+      FROM ${sql(config.tableName)}
       ORDER BY date DESC
       LIMIT 1`;
         return data[0];

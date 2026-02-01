@@ -1,10 +1,22 @@
 'use client'
-import { Draw, PrizeGrade } from "@/app/lib/definitions";
+import { Draw, PrizeGrade, LotteryType, lotteryConfigs } from "@/app/lib/definitions";
 import Ball from "@/app/ui/ball";
 import { useState } from "react";
-export default function LotteryDraw({ draw }: { draw: Draw }) {
+
+interface LotteryDrawProps {
+  draw: Draw;
+  lotteryType?: LotteryType;
+}
+
+export default function LotteryDraw({ draw, lotteryType = 'double-color' }: LotteryDrawProps) {
     const [showDetail, setShowDetail] = useState(false);
     const prizegrades: PrizeGrade[] = draw.prizegrades as unknown as PrizeGrade[];
+    const config = lotteryConfigs[lotteryType];
+    
+    // 大乐透号码是空格分隔，双色球是逗号分隔
+    const redSeparator = lotteryType === 'super-lotto' ? ' ' : ',';
+    const blueSeparator = lotteryType === 'super-lotto' ? ' ' : ',';
+    
     return (
         <article className="group relative m-2 w-full max-w-3xl overflow-hidden rounded-3xl border border-white/15 bg-slate-900/75 p-5 shadow-[0_30px_90px_-45px_rgba(59,130,246,0.55)] backdrop-blur-2xl transition-transform duration-500 hover:-translate-y-1">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(244,63,94,0.22),transparent_55%)]" aria-hidden />
@@ -31,10 +43,12 @@ export default function LotteryDraw({ draw }: { draw: Draw }) {
                 </header>
 
                 <div className="flex flex-wrap items-center gap-2">
-                    {draw.red.split(',').map((item) => (
-                        <Ball key={Number(item)} num={Number(item)} type="red" />
+                    {draw.red.split(redSeparator).map((item) => (
+                        <Ball key={Number(item.trim())} num={Number(item.trim())} type="red" />
                     ))}
-                    <Ball num={Number(draw.blue)} type="blue" />
+                    {draw.blue.split(blueSeparator).map((item) => (
+                        <Ball key={Number(item.trim())} num={Number(item.trim())} type="blue" />
+                    ))}
                 </div>
 
                 <div className="flex flex-wrap gap-4 text-sm text-slate-200/80">
@@ -62,13 +76,29 @@ export default function LotteryDraw({ draw }: { draw: Draw }) {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-white/5">
-                                    {prizegrades.slice(0, 3).map((prize) => (
-                                        <tr key={prize.type}>
-                                            <td className="px-3 py-2 text-slate-100/90">{prize.type} 等奖</td>
-                                            <td className="px-3 py-2 text-slate-100/80">{Number(prize.typenum).toLocaleString()}</td>
-                                            <td className="px-3 py-2 text-emerald-200/90">¥ {Number(prize.typemoney).toLocaleString()}</td>
-                                        </tr>
-                                    ))}
+                                    {prizegrades.slice(0, 3).map((prize) => {
+                                        // 处理奖金显示，处理 "---" 等非数字情况
+                                        const moneyStr = String(prize.typemoney);
+                                        const moneyNum = Number(moneyStr.replace(/,/g, ''));
+                                        const moneyDisplay = moneyStr === '---' || isNaN(moneyNum) 
+                                            ? '-' 
+                                            : `¥ ${moneyNum.toLocaleString()}`;
+                                        
+                                        // 处理注数显示
+                                        const numStr = String(prize.typenum);
+                                        const numNum = Number(numStr.replace(/,/g, ''));
+                                        const numDisplay = numStr === '---' || isNaN(numNum)
+                                            ? '-'
+                                            : numNum.toLocaleString();
+                                        
+                                        return (
+                                            <tr key={prize.type}>
+                                                <td className="px-3 py-2 text-slate-100/90">{prize.type}</td>
+                                                <td className="px-3 py-2 text-slate-100/80">{numDisplay}</td>
+                                                <td className="px-3 py-2 text-emerald-200/90">{moneyDisplay}</td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>
