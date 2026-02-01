@@ -8,17 +8,22 @@ const siteUrl = envSiteUrl && envSiteUrl.length > 0 ? envSiteUrl : "https://lott
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "双色球号码查询",
-    template: "%s | 双色球号码查询",
+    default: "双色球历史开奖号码查询 | 验证你的彩票是否中过奖",
+    template: "%s | 双色球开奖查询",
   },
-  description: "查询你的双色球号码，在历史上有没有中过奖",
+  description: "免费在线双色球历史开奖数据查询平台。支持输入6个红球+1个蓝球号码，查询2013年至今的中奖记录。查看最新开奖结果、奖池金额、中奖注数等详细信息。",
   keywords: [
     "双色球",
+    "双色球查询",
     "双色球开奖号码",
-    "双色球历史查询",
+    "双色球历史开奖",
+    "双色球中奖查询",
+    "彩票号码查询",
+    "双色球开奖结果",
+    "双色球奖池",
     "福利彩票",
-    "中奖号码查询",
-    "双色球开奖数据",
+    "双色球一等奖",
+    "双色球二等奖",
   ],
   icons: {
     icon: "/double-color.png",
@@ -26,20 +31,21 @@ export const metadata: Metadata = {
     shortcut: "/double-color.png",
   },
   alternates: {
-    canonical: "/",
+    canonical: siteUrl,
     languages: {
-      "zh-CN": "/",
+      "zh-CN": siteUrl,
     },
   },
-  authors: [{ name: "双色球号码查询" }],
-  creator: "双色球号码查询团队",
-  publisher: "双色球号码查询团队",
+  authors: [{ name: "双色球开奖查询", url: siteUrl }],
+  creator: "双色球开奖查询",
+  publisher: "双色球开奖查询",
   category: "Lottery",
+  classification: "彩票查询工具",
   openGraph: {
-    title: "双色球号码查询",
-    description: "查询你的双色球号码，在历史上有没有中过奖",
+    title: "双色球历史开奖号码查询 | 验证你的彩票是否中过奖",
+    description: "免费在线双色球历史开奖数据查询平台。输入你的彩票号码，查询2013年至今的中奖记录。",
     url: siteUrl,
-    siteName: "双色球号码查询",
+    siteName: "双色球开奖查询",
     locale: "zh_CN",
     type: "website",
     images: [
@@ -47,19 +53,20 @@ export const metadata: Metadata = {
         url: "/double-color.png",
         width: 512,
         height: 512,
-        alt: "双色球号码查询封面图",
+        alt: "双色球历史开奖号码查询工具",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "双色球号码查询",
-    description: "查询你的双色球号码，在历史上有没有中过奖",
+    title: "双色球历史开奖号码查询 | 验证你的彩票是否中过奖",
+    description: "免费在线双色球历史开奖数据查询平台。输入你的彩票号码，查询2013年至今的中奖记录。",
     images: ["/double-color.png"],
   },
   robots: {
     index: true,
     follow: true,
+    nocache: false,
     googleBot: {
       index: true,
       follow: true,
@@ -69,6 +76,12 @@ export const metadata: Metadata = {
     },
   },
   referrer: "origin-when-cross-origin",
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
+  },
+  other: {
+    "baidu-site-verification": process.env.NEXT_PUBLIC_BAIDU_VERIFICATION || "",
+  },
 };
 
 export const viewport: Viewport = {

@@ -9,8 +9,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: siteUrl,
       lastModified,
-      changeFrequency: "weekly",
+      changeFrequency: "daily",
       priority: 1,
+    },
+    {
+      url: `${siteUrl}/sitemap.xml`,
+      lastModified,
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/robots.txt`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.5,
     },
   ];
 }

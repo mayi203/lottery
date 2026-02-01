@@ -12,19 +12,33 @@ const envSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
 const siteUrl = envSiteUrl && envSiteUrl.length > 0 ? envSiteUrl : "https://lottery.example.com";
 
 export const metadata: Metadata = {
-  title: "双色球历史开奖数据查询",
-  description: "输入 6 个红球与 1 个蓝球，快速检索历年的双色球大奖记录，并获取当期最新开奖情况。",
+  title: "双色球历史开奖号码查询 | 快速验证你的彩票号码是否中过奖",
+  description: "免费在线双色球历史开奖数据查询工具。输入你的6个红球和1个蓝球号码，立即查询2013年至今是否中过一等奖、二等奖。查看最新开奖结果、奖池金额和中奖详情。",
+  keywords: ["双色球", "双色球查询", "双色球历史开奖", "双色球中奖查询", "彩票号码查询", "双色球开奖结果", "双色球奖池", "福利彩票"],
   alternates: {
-    canonical: "/",
+    canonical: siteUrl,
   },
   openGraph: {
-    title: "双色球历史开奖数据查询",
-    description: "一站式双色球号码查询工具，涵盖历史开奖数据与最新一期中奖号码。",
+    title: "双色球历史开奖号码查询 | 快速验证你的彩票号码是否中过奖",
+    description: "免费在线双色球历史开奖数据查询工具。输入你的6个红球和1个蓝球号码，立即查询2013年至今是否中过一等奖、二等奖。查看最新开奖结果、奖池金额。",
     url: siteUrl,
+    siteName: "双色球开奖查询",
+    locale: "zh_CN",
+    type: "website",
+    images: [
+      {
+        url: `${siteUrl}/double-color.png`,
+        width: 512,
+        height: 512,
+        alt: "双色球历史开奖号码查询",
+      },
+    ],
   },
   twitter: {
-    title: "双色球历史开奖数据查询",
-    description: "一站式双色球号码查询工具，涵盖历史开奖数据与最新一期中奖号码。",
+    card: "summary_large_image",
+    title: "双色球历史开奖号码查询 | 快速验证你的彩票号码是否中过奖",
+    description: "免费在线双色球历史开奖数据查询工具。输入你的彩票号码，立即查询是否中过奖。",
+    images: [`${siteUrl}/double-color.png`],
   },
 };
 
@@ -43,10 +57,10 @@ async function LatestDrawSection() {
 }
 
 export default async function Home() {
-  const structuredData = {
+  const webAppData = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "双色球号码查询",
+    name: "双色球历史开奖号码查询",
     url: siteUrl,
     applicationCategory: "LifestyleApplication",
     operatingSystem: "Web",
@@ -56,18 +70,68 @@ export default async function Home() {
       price: "0",
       priceCurrency: "CNY",
     },
-    description: "基于历史开奖数据的双色球号码在线查询工具，支持号码智能校验与最新开奖展示。",
+    description: "免费在线双色球历史开奖数据查询工具。输入6个红球和1个蓝球号码，立即查询2013年至今是否中过一等奖、二等奖。查看最新开奖结果、奖池金额和中奖详情。",
     potentialAction: {
       "@type": "SearchAction",
       target: `${siteUrl}/?reds={reds}`,
       "query-input": "required name=reds",
     },
+    author: {
+      "@type": "Organization",
+      name: "双色球开奖查询",
+      url: siteUrl,
+    },
+    datePublished: "2024-01-01",
+    dateModified: new Date().toISOString().split('T')[0],
+  };
+
+  const faqData = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "如何查询双色球历史中奖号码？",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "在本页面选择6个红球（1-33）和1个蓝球（1-16），点击查询按钮即可查询该组号码在2013年至今是否中过一等奖或二等奖。",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "双色球开奖时间是什么时候？",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "双色球每周二、四、日晚上21:15开奖。本网站会及时更新最新一期开奖结果，包括红球、蓝球、销售额、奖池金额和各奖项中奖情况。",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "双色球中奖规则是什么？",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "双色球一等奖需中6个红球+1个蓝球，二等奖需中6个红球。本工具主要查询一等奖和二等奖的历史中奖记录，帮助您了解号码历史表现。",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "这个查询工具收费吗？",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "完全免费。本站提供双色球历史开奖数据查询服务，无需注册、无需付费，输入号码即可立即查询。",
+        },
+      },
+    ],
   };
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-slate-950 text-slate-100">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqData) }}
       />
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-44 left-1/2 h-96 w-[32rem] -translate-x-1/2 rounded-full bg-emerald-500/20 blur-3xl" aria-hidden />
@@ -81,10 +145,10 @@ export default async function Home() {
             Lucky Query Hub
           </div>
           <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            双色球历史中奖号码查询
+            双色球历史开奖号码查询
           </h1>
           <p className="max-w-2xl text-sm text-slate-300/85 sm:text-base">
-            快速输入你关注的号码组合，立即查看 2013-01-01 以来的中奖记录，掌握每一次幸运的足迹。
+            免费在线查询双色球彩票号码历史中奖记录。输入6个红球+1个蓝球，立即查询2013年至今是否中过一等奖、二等奖。查看最新开奖结果、奖池金额和中奖详情。
           </p>
         </header>
 
@@ -102,7 +166,7 @@ export default async function Home() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-slate-200 transition-all duration-300 hover:border-emerald-300/60 hover:bg-emerald-400/10 hover:text-white"
           >
-            <img src="/xiaohongshu.svg" alt="Xiaohongshu" className="h-8 w-8 rounded-full border border-white/10" />
+            <img src="/xiaohongshu.svg" alt="小红书关注双色球玩法" className="h-8 w-8 rounded-full border border-white/10" />
             关注更多玩法灵感
           </Link>
         </footer>
